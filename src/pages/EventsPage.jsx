@@ -100,45 +100,52 @@ export const EventsPage = () => {
       </Box>
 
       {/* Display (filtered) events */}
+      {/* Display (filtered) events */}
       <Box>
-        <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={6}>
-          {filteredEvents.map((event) => {
-            const matchedCategories = event.categoryIds
-              .map((id) => categories?.find((cat) => cat.id === id))
-              .filter(Boolean);
+        {filteredEvents.length === 0 ? (
+          <Text mt={4} color="gray.500">
+            No results found.
+          </Text>
+        ) : (
+          <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={6}>
+            {filteredEvents.map((event) => {
+              const matchedCategories = event.categoryIds
+                .map((id) => categories?.find((cat) => cat.id === id))
+                .filter(Boolean);
 
-            return (
-              <Card key={event.id} backgroundColor="yellow.50">
-                <CardHeader>
-                  <Heading size="md">{event.title}</Heading>
-                </CardHeader>
-                <CardBody>
-                  <Text>{event.description}</Text>
-                  <Image
-                    objectFit="cover"
-                    width="100%"
-                    height="150px"
-                    src={event.image}
-                    alt="event image"
-                  />
-                  <Text>Start: {event.startTime}</Text>
-                  <Text>End: {event.endTime}</Text>
-                  <Text>
-                    Categories:{" "}
-                    {matchedCategories.length > 0
-                      ? matchedCategories.map((cat) => cat.name).join(", ")
-                      : "Loading..."}
-                  </Text>
-                </CardBody>
-                <CardFooter>
-                  <Link to={`/event/${event.id}`}>
-                    <Button colorScheme="teal">View Event </Button>
-                  </Link>
-                </CardFooter>
-              </Card>
-            );
-          })}
-        </SimpleGrid>
+              return (
+                <Card key={event.id} backgroundColor="yellow.50">
+                  <CardHeader>
+                    <Heading size="md">{event.title}</Heading>
+                  </CardHeader>
+                  <CardBody>
+                    <Text>{event.description}</Text>
+                    <Image
+                      objectFit="cover"
+                      width="100%"
+                      height="150px"
+                      src={event.image}
+                      alt="event image"
+                    />
+                    <Text>Start: {event.startTime}</Text>
+                    <Text>End: {event.endTime}</Text>
+                    <Text>
+                      Categories:{" "}
+                      {matchedCategories.length > 0
+                        ? matchedCategories.map((cat) => cat.name).join(", ")
+                        : "Loading..."}
+                    </Text>
+                  </CardBody>
+                  <CardFooter>
+                    <Link to={`/event/${event.id}`}>
+                      <Button colorScheme="teal">View Event </Button>
+                    </Link>
+                  </CardFooter>
+                </Card>
+              );
+            })}
+          </SimpleGrid>
+        )}
       </Box>
     </Box>
   );
