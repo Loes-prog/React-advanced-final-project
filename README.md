@@ -2,7 +2,7 @@ Assignment for the WincAcademy course: React Advanced Final Project. I prefer to
  <br>
  <br> 
  <br>
-__________________________________________________________________________________________________________________________ <br>
+______________________________________________________________________________________________<br>
 Requirements: <br>
 The app contains a form. <br>
 You have used React Router. <br>
