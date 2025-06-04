@@ -104,6 +104,7 @@ export const AddForm = () => {
           <ModalBody>
             <form onSubmit={handleSubmit(onSubmit)}>
               {/* CreatedBy input */}
+
               <FormControl isInvalid={errors.createdBy} mb={4}>
                 <Select
                   id="createdBy"

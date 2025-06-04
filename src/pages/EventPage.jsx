@@ -9,11 +9,9 @@ import { UpdateForm } from "../components/UpdateForm";
 
 export const EventPage = () => {
   // Retrieve the eventId from the URL parameters
-
   const { eventId } = useParams();
 
   // Fetching event data and users data using react-query
-
   const { isLoading, error, data } = useQuery({
     queryKey: ["eventData", eventId],
     queryFn: () =>
@@ -33,7 +31,6 @@ export const EventPage = () => {
   });
 
   // State to manage editing mode
-
   const [isEditing, setIsEditing] = useState(false);
 
   // Handle loading and error states
