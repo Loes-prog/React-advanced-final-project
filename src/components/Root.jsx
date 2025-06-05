@@ -12,7 +12,7 @@ export const Root = () => {
         <Navigation />
       </Box>
 
-      <Box pt="60px" backgroundColor={"gray.100"}>
+      <Box pt="60px">
         <Outlet />
       </Box>
     </>

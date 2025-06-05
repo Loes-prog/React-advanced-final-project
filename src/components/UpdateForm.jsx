@@ -224,7 +224,7 @@ export const UpdateForm = ({ eventId }) => {
             type="datetime-local"
             backgroundColor="white"
             {...register("startTime", {
-              required: "Starttijd is verplicht",
+              required: "StartTime is required",
             })}
           />
           <FormErrorMessage>
@@ -241,7 +241,14 @@ export const UpdateForm = ({ eventId }) => {
             type="datetime-local"
             backgroundColor="white"
             {...register("endTime", {
-              required: "Eindtijd is verplicht",
+              required: "EndTime is required",
+              // Validate that endTime is after startTime
+              validate: (value) => {
+                const start = new Date(watch("startTime"));
+                const end = new Date(value);
+                if (isNaN(start.getTime()) || isNaN(end.getTime())) return true;
+                return end > start || "End time must be after start time";
+              },
             })}
           />
           <FormErrorMessage>

@@ -11,7 +11,7 @@ export const EventPage = () => {
   // Retrieve the eventId from the URL parameters
   const { eventId } = useParams();
 
-  // Fetching event data and users data using react-query
+  // Fetching event data, users and categories data using react-query
   const { isLoading, error, data } = useQuery({
     queryKey: ["eventData", eventId],
     queryFn: () =>
@@ -30,6 +30,16 @@ export const EventPage = () => {
       fetch("http://localhost:3000/users").then((res) => res.json()),
   });
 
+  const {
+    data: categoriesData,
+    isLoading: categoriesLoading,
+    error: categoriesError,
+  } = useQuery({
+    queryKey: ["categoriesData"],
+    queryFn: () =>
+      fetch("http://localhost:3000/categories").then((res) => res.json()),
+  });
+
   // State to manage editing mode
   const [isEditing, setIsEditing] = useState(false);
 
@@ -40,12 +50,12 @@ export const EventPage = () => {
   if (usersLoading) return <Text>Loading users...</Text>;
   if (usersError) return <Text>Error loading users: {usersError.message}</Text>;
 
-  // Prepare categories and createdBy data for display
-  const categories = [
-    { id: 1, name: "sports" },
-    { id: 2, name: "games" },
-    { id: 3, name: "relaxation" },
-  ];
+  if (categoriesLoading) return <Text>Loading categories...</Text>;
+  if (categoriesError)
+    return <Text>Error loading categories: {categoriesError.message}</Text>;
+
+  // Extract categories data or set to an empty array if not available
+  const categories = categoriesData || [];
 
   // Find the user who created the event
   const createdBy = usersData?.find((user) => user.id === data.createdBy);

@@ -14,13 +14,7 @@ export const Navigation = () => {
           <Link as={RouterLink} to="/" _hover={{ textDecoration: "underline" }}>
             Events
           </Link>
-          <Link
-            as={RouterLink}
-            to="/event/1"
-            _hover={{ textDecoration: "underline" }}
-          >
-            Event
-          </Link>
+          {/* possible to add more links here */}
         </HStack>
       </Flex>
     </Box>

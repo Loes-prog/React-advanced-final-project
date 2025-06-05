@@ -1,4 +1,6 @@
 import { useForm } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
+
 import { v4 as uuidv4 } from "uuid";
 import {
   FormErrorMessage,
@@ -83,12 +85,20 @@ export const AddForm = () => {
   };
 
   // Categories for the checkbox input
+  const {
+    data: categories,
+    isLoading: loadingCategories,
+    error: categoriesError,
+  } = useQuery({
+    queryKey: ["addFormCategories"],
+    queryFn: () =>
+      fetch("http://localhost:3000/categories").then((res) => res.json()),
+  });
 
-  const categories = [
-    { id: 1, label: "sports" },
-    { id: 2, label: "games" },
-    { id: 3, label: "relaxation" },
-  ];
+  // Handle loading and error states for categories
+  if (loadingCategories) return <p>Loading categories...</p>;
+  if (categoriesError)
+    return <p>Error loading categories: {categoriesError.message}</p>;
 
   return (
     <>
@@ -175,7 +185,7 @@ export const AddForm = () => {
                     pattern: {
                       value:
                         /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp|svg))$/i,
-                      message: "Voer een geldige afbeelding-URL in",
+                      message: "Fill in a valid image URL",
                     },
                   })}
                 />
@@ -186,28 +196,28 @@ export const AddForm = () => {
 
               {/* Category input */}
 
-              <FormControl isInvalid={errors.categoryIds} mb={4}>
-                <FormLabel>Choose one or more categories</FormLabel>
-                <VStack align="start">
-                  {categories.map((cat) => (
-                    <Checkbox
-                      key={cat.id}
-                      value={cat.id.toString()}
-                      {...register("categoryIds", {
-                        required: "Minstens één categorie is verplicht",
-                      })}
-                      isChecked={selectedCategories.includes(cat.id.toString())}
-                      onChange={onCheckboxChange}
-                      borderColor="gray.300"
-                      colorScheme="whiteAlpha"
-                      iconColor="black"
-                    >
-                      {cat.label}
-                    </Checkbox>
-                  ))}
-                </VStack>
+              <FormControl isInvalid={errors.categories} mb={4}>
+                <FormLabel>Categorieën</FormLabel>
+                {loadingCategories ? (
+                  <p>Loading categories...</p>
+                ) : categoriesError ? (
+                  <p>Error loading categories</p>
+                ) : (
+                  <VStack align="start">
+                    {categories.map((cat) => (
+                      <Checkbox
+                        key={cat.id}
+                        value={cat.id}
+                        isChecked={selectedCategories.includes(String(cat.id))}
+                        onChange={onCheckboxChange}
+                      >
+                        {cat.name}
+                      </Checkbox>
+                    ))}
+                  </VStack>
+                )}
                 <FormErrorMessage>
-                  {errors.categoryIds?.message}
+                  {errors.categories && errors.categories.message}
                 </FormErrorMessage>
               </FormControl>
 
@@ -239,7 +249,7 @@ export const AddForm = () => {
                   id="startTime"
                   type="datetime-local"
                   {...register("startTime", {
-                    required: "Starttijd is verplicht",
+                    required: "StartTime is required",
                   })}
                 />
                 <FormErrorMessage>
@@ -255,7 +265,15 @@ export const AddForm = () => {
                   id="endTime"
                   type="datetime-local"
                   {...register("endTime", {
-                    required: "Eindtijd is verplicht",
+                    required: "EndTime is required",
+                    // Validate that endTime is after startTime
+                    validate: (value) => {
+                      const start = new Date(watch("startTime"));
+                      const end = new Date(value);
+                      if (isNaN(start.getTime()) || isNaN(end.getTime()))
+                        return true;
+                      return end > start || "End time must be after start time";
+                    },
                   })}
                 />
                 <FormErrorMessage>
